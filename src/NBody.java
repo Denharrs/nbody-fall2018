@@ -20,14 +20,10 @@ public class NBody {
 	 */
 	public static double readRadius(String fname) throws FileNotFoundException  {
 		Scanner s = new Scanner(new File(fname));
-	
-		// TODO: read values at beginning of file to
-		// find the radius
-		
+		s.nextInt();
+		double radius = s.nextDouble();
 		s.close();
-		
-		// TODO: return radius read
-		return 0;	
+		return radius;	
 	}
 	
 	/**
@@ -41,19 +37,19 @@ public class NBody {
 		
 			Scanner s = new Scanner(new File(fname));
 			
-			// TODO: read # bodies, create array, ignore radius
-			int nb = 0; // # bodies to be read
+			int nb = s.nextInt(); 
+			Body[] bodies = new Body [nb];
+			s.nextDouble();
 			
 			for(int k=0; k < nb; k++) {
-				
-				// TODO: read data for each body
-				// construct new body object and add to array
+				Body b = new Body(s.nextDouble(), s.nextDouble(), s.nextDouble(), 
+						s.nextDouble(), s.nextDouble(), s.next());
+				bodies[k] = b;
 			}
 			
 			s.close();
 			
-			// TODO: return array of body objects read
-			return null;
+			return bodies;
 	}
 	public static void main(String[] args) throws FileNotFoundException{
 		double totalTime = 157788000.0;
@@ -74,18 +70,22 @@ public class NBody {
 	
 		for(double t = 0.0; t < totalTime; t += dt) {
 			
-			// TODO: create double arrays xforces and yforces
-			// to hold forces on each body
-			
-			// TODO: loop over all bodies, calculate
-			// net forces and store in xforces and yforces
-			
-			// TODO: loop over all bodies and call update
-			// with dt and corresponding xforces, yforces values
-			
+			double[] xforces = new double [bodies.length];
+			double[] yforces = new double [bodies.length];
+
+			for(int k = 0; k < bodies.length; k++) {
+				xforces[k] = bodies[k].calcNetForceExertedByX(bodies);
+				yforces[k] = bodies[k].calcNetForceExertedByY(bodies);
+			}
+
+			for(int k = 0; k < bodies.length; k++) {
+				bodies[k].update(dt, xforces[k], yforces[k]);
+			}
 			StdDraw.picture(0,0,"images/starfield.jpg");
 			
-			// TODO: loop over all bodies and call draw on each one
+			for(int k = 0; k < bodies.length; k++) {
+				bodies[k].draw();
+			}
 			
 			StdDraw.show(10);
 		}
